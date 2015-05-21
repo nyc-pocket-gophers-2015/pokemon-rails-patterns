@@ -1,5 +1,6 @@
 class Pokemon < ActiveRecord::Base
   self.inheritance_column = nil #Defending against STI
+  validate :ok_to_capture
 
   TYPES = %w(
     bug dark dragon electric fairy fighting fire flying
@@ -27,5 +28,22 @@ class Pokemon < ActiveRecord::Base
   def capture
     self.caught = true
     save
+  end
+
+  private
+
+  def ok_to_capture
+    if caught
+      errors.add(:base, "You have this pokemon already") if have_pokemon
+      errors.add(:base, "You already have two of type #{type}") if have_two_of_type
+    end
+  end
+
+  def have_pokemon
+    Pokemon.caught.where(id: id).count > 0
+  end
+
+  def have_two_of_type
+    Pokemon.caught.typed(type).count >= 2
   end
 end
