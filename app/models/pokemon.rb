@@ -7,4 +7,14 @@ class Pokemon < ActiveRecord::Base
     shadow steel unknown water
   )
 
+  scope :free, -> {where(caught: false)}
+  scope :caught, -> { where(caught: true )}
+
+  scope :typed, -> (type=nil) do
+    if type
+      where(type:type)
+    else
+      all
+    end
+  end
 end
