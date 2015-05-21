@@ -1,5 +1,7 @@
 class PokemonController < ApplicationController
 
+  before_action :set_types, only:[:index, :catch]
+
   def index
     #Searching
     @captured_pokemon = Pokemon.where(caught: true).order(:type)
@@ -13,19 +15,10 @@ class PokemonController < ApplicationController
     @captured_pokemon = @captured_pokemon.order(:type, :id)
     @free_pokemon = @free_pokemon.order(:type, :id)
 
-    @types = %w(
-    bug dark dragon electric fairy fighting fire flying
-    ghost grass ground ice normal poison psychic rock
-    shadow steel unknown water
-    )
   end
 
   def catch
-    @types = %w(
-    bug dark dragon electric fairy fighting fire flying
-    ghost grass ground ice normal poison psychic rock
-    shadow steel unknown water
-    )
+
     #Validations: Allowed to catch pokemon that follow the following rules:
     # you don't already have it
     # you don't already have 2 pokemon of that type
@@ -57,6 +50,10 @@ class PokemonController < ApplicationController
   end
 
   private
+
+  def set_types
+    @types = Pokemon::TYPES
+  end
 
   def redirect_with_type
     if params[:type].present?
