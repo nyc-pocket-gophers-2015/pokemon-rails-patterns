@@ -17,4 +17,15 @@ class Pokemon < ActiveRecord::Base
       all
     end
   end
+
+  def release
+    self.caught = false
+    #do other stuff
+    save
+  end
+
+  def capture
+    self.caught = true
+    save
+  end
 end
